@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f0e17;
+            --secondary: #1f1b2e;
+            --accent: #e53170;
+            --text: #fffffe;
+            --highlight: #ff8906;
+            --card-bg: rgba(31, 27, 46, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--highlight);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--highlight);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(rgba(15, 14, 23, 0.8), rgba(15, 14, 23, 0.8)), 
+                        url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--highlight);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            padding-left: 3.5rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            outline: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--highlight);
+            font-size: 1.2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--highlight);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .player-section {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .player-card {
+            flex: 1;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cover-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .cover {
+            width: 250px;
+            height: 250px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .cover:hover {
+            transform: scale(1.02);
+        }
+
+        .song-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .song-title {
+            font-size: 1.8rem;
+            margin: 0.5rem 0;
+            color: var(--highlight);
+        }
+
+        .song-artist {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .song-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .song-country, .song-genre {
+            background: rgba(255, 137, 6, 0.1);
+            color: var(--highlight);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 3px;
+            margin: 1.5rem 0;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            background: var(--accent);
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.8rem;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            color: var(--highlight);
+            transform: scale(1.1);
+        }
+
+        .play-btn {
+            background: var(--accent);
+            color: white;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+
+        .play-btn:hover {
+            background: #d11d5f;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .volume-container i {
+            color: var(--highlight);
+        }
+
+        .volume-slider {
+            flex: 1;
+            accent-color: var(--accent);
+        }
+
+        .playlist-section {
+            flex: 1;
+        }
+
+        .playlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .song-list {
+            max-height: 500px;
+            overflow-y: auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .song-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .song-item.active {
+            background: rgba(229, 49, 112, 0.1);
+        }
+
+        .song-item-cover {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+            margin-right: 1rem;
+        }
+
+        .song-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .song-item-title {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-item-artist {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-item-duration {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            margin-left: 1rem;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .category-info {
+            padding: 1rem;
+        }
+
+        .category-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--highlight);
+        }
+
+        .category-count {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        footer {
+            background: var(--secondary);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--highlight);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-icons a {
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--highlight);
+        }
+
+        .copyright {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .player-section {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero {
+                padding: 3rem 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .cover {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .song-title {
+                font-size: 1.5rem;
+            }
+            
+            .song-artist {
+                font-size: 1rem;
+            }
+            
+            .controls {
+                gap: 0.5rem;
+            }
+            
+            .play-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-music"></i>
+            <span>Global Beats</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Explore</a></li>
+                <li><a href="#">Genres</a></li>
+                <li><a href="#">Playlists</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Discover Music From Around The World</h1>
+            <p>Stream the latest hits from Korea, India, America and more. Create your perfect playlist today.</p>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for songs, artists or genres...">
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <section class="player-section">
+            <div class="player-card">
+                <div class="cover-container">
+                    <img src="https://i.scdn.co/image/ab67616d0000b27370426e24663b43f11ebd6c51" alt="Album Cover" class="cover">
+                </div>
+                
+                <div class="song-info">
+                    <h2 class="song-title">Dynamite</h2>
+                    <p class="song-artist">BTS</p>
+                    <div class="song-meta">
+                        <span class="song-country">South Korea</span>
+                        <span class="song-genre">K-Pop</span>
+                    </div>
+                </div>
+                
+                <audio id="audio"></audio>
+                
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span class="current-time">0:00</span>
+                    <span class="duration">3:19</span>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn prev-btn"><i class="fas fa-step-backward"></i></button>
+                    <button class="btn play-btn"><i class="fas fa-play"></i></button>
+                    <button class="btn next-btn"><i class="fas fa-step-forward"></i></button>
+                </div>
+                
+                <div class="volume-container">
+                    <i class="fas fa-volume-up"></i>
+                    <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="0.7">
+                </div>
+            </div>
+
+            <div class="playlist-section">
+                <div class="playlist-header">
+                    <h2 class="section-title">Now Playing</h2>
+                    <span class="song-count">20 songs</span>
+                </div>
+                <div class="song-list">
+                    <!-- Song items will be added by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <section class="categories-section">
+            <h2 class="section-title">Browse Categories</h2>
+            <div class="categories">
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="K-Pop" class="category-img">
+                    <div class="category-info">
+                        <h3 class="category-title">K-Pop</h3>
+                        <p class="category-count">45 songs</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Bollywood" class="category-img">
+                    <div class="category-info">
+                        <h3 class="category-title">Bollywood</h3>
+                        <p class="category-count">38 songs</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Pop" class="category-img">
+                    <div class="category-info">
+                        <h3 class="category-title">Pop</h3>
+                        <p class="category-count">62 songs</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Hip-Hop" class="category-img">
+                    <div class="category-info">
+                        <h3 class="category-title">Hip-Hop</h3>
+                        <p class="category-count">29 songs</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+        </div>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="copyright">© 2023 Global Beats. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // International songs collection
+        const songs = [
+            // Korean Songs
+            {
+                title: "Dynamite",
+                artist: "BTS",
+                cover: "https://i.scdn.co/image/ab67616d0000b27370426e24663b43f11ebd6c51",
+                country: "South Korea",
+                genre: "K-Pop",
+                duration: "3:19",
+                audio: ""
+            },
+            {
+                title: "How You Like That",
+                artist: "BLACKPINK",
+                cover: "https://i.scdn.co/image/ab67616d0000b27318d0ed4f969b376893f9a38f",
+                country: "South Korea",
+                genre: "K-Pop",
+                duration: "3:01",
+                audio: ""
+            },
+            {
+                title: "Love Scenario",
+                artist: "iKON",
+                cover: "https://i.scdn.co/image/ab67616d0000b2734c2fcea217112b13312f8fb2",
+                country: "South Korea",
+                genre: "K-HipHop",
+                duration: "3:29",
+                audio: ""
+            },
+            {
+                title: "Gangnam Style",
+                artist: "PSY",
+                cover: "https://i.scdn.co/image/ab67616d0000b27382dd2427e6d302711b1e9615",
+                country: "South Korea",
+                genre: "K-Pop",
+                duration: "3:39",
+                audio: ""
+            },
+            
+            // Indian Songs
+            {
+                title: "Kesariya",
+                artist: "Arijit Singh",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a1",
+                country: "India",
+                genre: "Bollywood",
+                duration: "4:28",
+                audio: ""
+            },
+            {
+                title: "Naatu Naatu",
+                artist: "Rahul Sipligunj, Kaala Bhairava",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a2",
+                country: "India",
+                genre: "Telugu",
+                duration: "3:36",
+                audio: ""
+            },
+            {
+                title: "Tum Hi Ho",
+                artist: "Arijit Singh",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a3",
+                country: "India",
+                genre: "Bollywood",
+                duration: "4:22",
+                audio: ""
+            },
+            {
+                title: "Why This Kolaveri Di",
+                artist: "Dhanush",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a4",
+                country: "India",
+                genre: "Tamil",
+                duration: "4:19",
+                audio: ""
+            },
+            
+            // American Songs
+            {
+                title: "Blinding Lights",
+                artist: "The Weeknd",
+                cover: "https://i.scdn.co/image/ab67616d0000b273e2d156fdc691f57900134342",
+                country: "USA",
+                genre: "Pop",
+                duration: "3:20",
+                audio: ""
+            },
+            {
+                title: "Levitating",
+                artist: "Dua Lipa",
+                cover: "https://i.scdn.co/image/ab67616d0000b2732a038d3bf875d23e4aeaa84e",
+                country: "USA",
+                genre: "Pop",
+                duration: "3:23",
+                audio: ""
+            },
+            {
+                title: "Stay",
+                artist: "The Kid LAROI, Justin Bieber",
+                cover: "https://i.scdn.co/image/ab67616d0000b273604f1c6c6e5a1d874e3a9113",
+                country: "USA",
+                genre: "Pop",
+                duration: "2:21",
+                audio: ""
+            },
+            {
+                title: "good 4 u",
+                artist: "Olivia Rodrigo",
+                cover: "https://i.scdn.co/image/ab67616d0000b27318d0ed4f969b376893f9a38f",
+                country: "USA",
+                genre: "Pop Rock",
+                duration: "2:58",
+                audio: ""
+            },
+            {
+                title: "Savage",
+                artist: "Megan Thee Stallion",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a5",
+                country: "USA",
+                genre: "Hip-Hop",
+                duration: "2:35",
+                audio: ""
+            },
+            {
+                title: "Old Town Road",
+                artist: "Lil Nas X",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a6",
+                country: "USA",
+                genre: "Country Rap",
+                duration: "1:53",
+                audio: ""
+            },
+            {
+                title: "Don't Start Now",
+                artist: "Dua Lipa",
+                cover: "https://i.scdn.co/image/ab67616d0000b2732a038d3bf875d23e4aeaa84e",
+                country: "USA",
+                genre: "Disco Pop",
+                duration: "3:03",
+                audio: ""
+            },
+            {
+                title: "Watermelon Sugar",
+                artist: "Harry Styles",
+                cover: "https://i.scdn.co/image/ab67616d0000b27377fdcfda6535601aff081b6a",
+                country: "USA",
+                genre: "Pop",
+                duration: "2:54",
+                audio: ""
+            },
+            {
+                title: "Circles",
+                artist: "Post Malone",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a7",
+                country: "USA",
+                genre: "Pop Rock",
+                duration: "3:35",
+                audio: ""
+            },
+            {
+                title: "Sunflower",
+                artist: "Post Malone, Swae Lee",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a8",
+                country: "USA",
+                genre: "Pop Rap",
+                duration: "2:38",
+                audio: ""
+            },
+            {
+                title: "Bad Guy",
+                artist: "Billie Eilish",
+                cover: "https://i.scdn.co/image/ab67616d0000b2733a1a7c4a6a9a5b8a1a5b8a9",
+                country: "USA",
+                genre: "Electropop",
+                duration: "3:14",
+                audio: ""
+            }
+        ];
+
+        // DOM Elements
+        const audio = document.getElementById('audio');
+        const cover = document.querySelector('.cover');
+        const songTitle = document.querySelector('.song-title');
+        const songArtist = document.querySelector('.song-artist');
+        const songCountry = document.querySelector('.song-country');
+        const songGenre = document.querySelector('.song-genre');
+        const progressContainer = document.querySelector('.progress-container');
+        const progressBar = document.querySelector('.progress-bar');
+        const currentTimeEl = document.querySelector('.current-time');
+        const durationEl = document.querySelector('.duration');
+        const playBtn = document.querySelector('.play-btn');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const volumeSlider = document.querySelector('.volume-slider');
+        const searchInput = document.querySelector('.search-input');
+        const songList = document.querySelector('.song-list');
+        const songCount = document.querySelector('.song-count');
+
+        // Current song index and filtered songs
+        let songIndex = 0;
+        let filteredSongs = [...songs];
+
+        // Initialize player
+        function initPlayer() {
+            loadSong(songs[songIndex]);
+            renderSongList();
+            updateSongCount();
+        }
+
+        // Load song
+        function loadSong(song) {
+            songTitle.textContent = song.title;
+            songArtist.textContent = song.artist;
+            cover.src = song.cover;
+            songCountry.textContent = song.country;
+            songGenre.textContent = song.genre;
+            durationEl.textContent = song.duration;
+            audio.src = song.audio;
+        }
+
+        // Render song list
+        function renderSongList() {
+            songList.innerHTML = '';
+            
+            if (filteredSongs.length === 0) {
+                songList.innerHTML = '<div class="no-results">No songs found matching your search</div>';
+                return;
+            }
+            
+            filteredSongs.forEach((song, index) => {
+                const songItem = document.createElement('div');
+                songItem.classList.add('song-item');
+                if (index === songIndex && songs[songIndex].title === song.title) {
+                    songItem.classList.add('active');
+                }
+                
+                songItem.innerHTML = `
+                    <img src="${song.cover}" alt="${song.title}" class="song-item-cover">
+                    <div class="song-item-info">
+                        <p class="song-item-title">${song.title}</p>
+                        <p class="song-item-artist">${song.artist}</p>
+                    </div>
+                    <span class="song-item-duration">${song.duration}</span>
+                `;
+                
+                songItem.addEventListener('click', () => {
+                    songIndex = songs.findIndex(s => s.title === song.title);
+                    loadSong(filteredSongs[index]);
+                    renderSongList();
+                });
+                
+                songList.appendChild(songItem);
+            });
+        }
+
+        // Update song count
+        function updateSongCount() {
+            songCount.textContent = `${filteredSongs.length} songs`;
+        }
+
+        // Search songs
+        function searchSongs() {
+            const searchTerm = searchInput.value.toLowerCase();
+            filteredSongs = songs.filter(song => 
+                song.title.toLowerCase().includes(searchTerm) ||
+                song.artist.toLowerCase().includes(searchTerm) ||
+                song.country.toLowerCase().includes(searchTerm) ||
+                song.genre.toLowerCase().includes(searchTerm)
+            );
+            
+            // Reset to first song if current song is not in filtered results
+            if (!filteredSongs.some(song => song.title === songs[songIndex].title)) {
+                songIndex = 0;
+                if (filteredSongs.length > 0) {
+                    loadSong(filteredSongs[songIndex]);
+                }
+            }
+            
+            renderSongList();
+            updateSongCount();
+        }
+
+        // Play song
+        function playSong() {
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        }
+
+        // Pause song
+        function pauseSong() {
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
+
+        // Previous song
+        function prevSong() {
+            songIndex--;
+            if (songIndex < 0) {
+                songIndex = filteredSongs.length - 1;
+            }
+            loadSong(filteredSongs[songIndex]);
+            renderSongList();
+        }
+
+        // Next song
+        function nextSong() {
+            songIndex++;
+            if (songIndex > filteredSongs.length - 1) {
+                songIndex = 0;
+            }
+            loadSong(filteredSongs[songIndex]);
+            renderSongList();
+        }
+
+        // Update progress bar
+        function updateProgress(e) {
+            const { duration, currentTime } = e.srcElement;
+            const progressPercent = (currentTime / duration) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            
+            // Update time display
+            const currentMinutes = Math.floor(currentTime / 60);
+            let currentSeconds = Math.floor(currentTime % 60);
+            if (currentSeconds < 10) {
+                currentSeconds = `0${currentSeconds}`;
+            }
+            currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
+        }
+
+        // Set progress bar
+        function setProgress(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
+        }
+
+        // Set volume
+        function setVolume() {
+            audio.volume = this.value;
+        }
+
+        // Event listeners
+        playBtn.addEventListener('click', () => {
+            const isPlaying = playBtn.querySelector('i').classList.contains('fa-play');
+            if (isPlaying) {
+                playSong();
+                audio.play();
+            } else {
+                pauseSong();
+                audio.pause();
+            }
+        });
+
+        prevBtn.addEventListener('click', prevSong);
+        nextBtn.addEventListener('click', nextSong);
+        audio.addEventListener('timeupdate', updateProgress);
+        audio.addEventListener('ended', nextSong);
+        progressContainer.addEventListener('click', setProgress);
+        volumeSlider.addEventListener('input', setVolume);
+        searchInput.addEventListener('input', searchSongs);
+
+        // Initialize player
+        initPlayer();
+    </script>
+</body>
+</html>
