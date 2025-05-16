@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="style.css" rel="stylesheet" />
+    <script src="script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-music"></i>
+            <span>Global Beats</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Explore</a></li>
+                <li><a href="#">Genres</a></li>
+                <li><a href="#">Playlists</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Discover Music From Around The World</h1>
+            <p>Stream the latest hits from Korea, India, America and more. Create your perfect playlist today.</p>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for songs, artists or genres...">
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <section class="player-section">
+            <div class="player-card">
+                <div class="cover-container">
+                    <img src="https://i.scdn.co/image/ab67616d0000b27370426e24663b43f11ebd6c51" alt="Album Cover" class="cover">
+                </div>
+                
+                <div class="song-info">
+                    <h2 class="song-title">Dynamite</h2>
+                    <p class="song-artist">BTS</p>
+                    <div class="song-meta">
+                        <span class="song-country">South Korea</span>
+                        <span class="song-genre">K-Pop</span>
+                    </div>
+                </div>
+                
+                <audio id="audio"></audio>
+                
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span class="current-time">0:00</span>
+                    <span class="duration">3:19</span>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn prev-btn"><i class="fas fa-step-backward"></i></button>
+                    <button class="btn play-btn"><i class="fas fa-play"></i></button>
+                    <button class="btn next-btn"><i class="fas fa-step-forward"></i></button>
+                </div>
+                
+                <div class="volume-container">
+                    <i class="fas fa-volume-up"></i>
+                    <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="0.7">
+                </div>
+            </div>
+
+            <div class="playlist-section">
+                <div class="playlist-header">
+                    <h2 class="section-title">Now Playing</h2>
+                    <span class="song-count">20 songs</span>
+                </div>
+                <div class="song-list">
+                </div>
+            </div>
+        </section>
+
+        <section class="categories-section">
+            <h2 class="section-title">Browse Categories</h2>
+            <div class="categories">
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="K-Pop" class="category-img">
+                    <div class="category-info">
+                        <h3 class="category-title">K-Pop</h3>
+                        <p class="category-count">45 songs</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Bollywood" class="category-img">
+                    <div class="category-info">
+                        <h3 class="category-title">Bollywood</h3>
+                        <p class="category-count">38 songs</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Pop" class="category-img">
+                    <div class="category-info">
+                        <h3 class="category-title">Pop</h3>
+                        <p class="category-count">62 songs</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Hip-Hop" class="category-img">
+                    <div class="category-info">
+                        <h3 class="category-title">Hip-Hop</h3>
+                        <p class="category-count">29 songs</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+        </div>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="copyright">© 2023 Global Beats. All rights reserved.</p>
+    </footer>
+</body>
+</html>
